@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB-my-web</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 700; 
+            background-color: #f5eef8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            color: #000000;
+        }
+
+        .screen {
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            position: relative;
+            transition: opacity 0.8s ease-in-out;
+            overflow: hidden;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .bg-video-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-video-wrapper iframe {
+            width: 100vw;
+            height: 56.25vw; 
+            min-height: 100vh;
+            min-width: 177.77vh; 
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none; 
+        }
+
+        #gate-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            opacity: 1;
+        }
+
+        .open-btn {
+            margin-bottom: 25%;
+            padding: 12px 40px;
+            background: linear-gradient(45deg, #ffc0cb, #f5f5dc);
+            color: #000000;
+            border: none;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(255, 192, 203, 0.8);
+            animation: pulse 2s infinite;
+            z-index: 2;
+            font-family: inherit;
+        }
+
+        #main-content {
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.177);
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .overlay-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.65); 
+            padding: 15px 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .controls-wrapper {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .music-control, .lang-control {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #000000;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .lang-control {
+            border-radius: 20px;
+            width: auto;
+            padding: 0 12px;
+        }
+
+        .bismillah {
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: #000000;
+            margin-top: 50px !important; 
+            margin-bottom: 5px;
+            display: block;
+            line-height: 1.2;
+        }
+
+        .quran-verse {
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 14px; 
+            font-weight: 700; 
+            color: #000000;
+            line-height: 1.8;
+            margin: 8px 0 15px 0;
+            display: block;
+        }
+
+        .names {
+            color: #000000;
+            font-size: 22px;
+            margin: 5px 0 10px 0;
+            font-weight: 700;
+        }
+
+        .welcome-text {
+            color: #000000;
+            font-size: 15px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #000000, transparent);
+            margin: 10px 0;
+        }
+
+        .countdown h3 {
+            color: #000000;
+            font-size: 15px;
+            margin-top: 0;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            font-weight: 700;
+        }
+
+        .timer {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px;
+            border-radius: 15px;
+            border: 1px solid #000000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .timer div {
+            font-size: 13px;
+            color: #000000;
+            font-weight: 700;
+            min-width: 60px;
+        }
+
+        .timer span {
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 5px;
+            color: #000000;
+            line-height: 1.4;
+            font-weight: 700;
+        }
+
+        .details p {
+            font-size: 15px;
+            margin: 3px 0;
+            font-weight: 700;
+        }
+
+        .map-link-wrapper {
+            display: block;
+            margin-top: 8px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .map-img {
+            display: block;
+            height: auto;
+            max-width: 100%;
+            width: 360px;
+            border-radius: 15px;
+        }
+
+        .rsvp-section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px;
+            border-radius: 15px;
+            border: 1px solid #000000;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            text-align: right;
+        }
+
+        .rsvp-section h3 {
+            color: #000000;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 15px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 8px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 15px;
+            color: #000000;
+            font-weight: 700;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #000000;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 15px;
+            color: #000000;
+            font-weight: 700;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #25D366; 
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-family: inherit;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" src="music.mp3" loop preload="auto"></audio>
+
+    <div id="gate-screen" class="screen">
+        <div class="bg-video-wrapper">
+            <iframe src="https://player.vimeo.com/video/1207457666?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&loop=1&muted=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" title="IMG_1180"></iframe>
+        </div>
+        <button id="open-btn" class="open-btn">کلیک بکە بۆ کردنەوە</button>
+    </div>
+
+    <div id="main-content" class="screen hidden">
+        
+        <div class="controls-wrapper">
+            <div id="music-btn" class="music-control">🔊</div>
+            <div id="lang-btn" class="lang-control">عەرەبی</div>
+        </div>
+
+        <div class="bg-video-wrapper">
+            <iframe src="https://player.vimeo.com/video/1207457666?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&loop=1&muted=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" title="IMG_1180"></iframe>
+        </div>
+
+        <div class="overlay-content">
+            <h1 class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيم</h1>
+            <br>
+            <p class="quran-verse">
+                وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْکُنُوا إِلَيْهَا<br>
+                وجَعَلَ... بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ
+            </p>
+
+            <h1 class="names">پەیوەند & سارا</h1>
+            <p class="welcome-text" id="welcome-text">بە ڕێزەوە بانگهێشتتان دەکەین بۆ ئامادەبوون لە ئاهەنگی هاوسەرگیریمان</p>
+
+            <hr>
+
+            <div class="countdown">
+                <h3 id="countdown-title">لەم ڕۆژە پڕ لە خۆشییەدا کە دڵەکانمان دەبن بە یەک، چاوەڕوانی ئامادەبوونی ئێوەی ئازیزین بۆ ئەوەی پێکەوە سەرەتای جوانترین چیرۆکی ژیانمان دەستپێبکەین.</h3>
+                <div class="timer">
+                    <div><span id="days">00</span> <span id="lbl-days">ڕۆژ</span></div>
+                    <div><span id="hours">00</span> <span id="lbl-hours">کاتژمێر</span></div>
+                    <div><span id="minutes">00</span> <span id="lbl-minutes">خولەک</span></div>
+                    <div><span id="seconds">00</span> <span id="lbl-seconds">چرکە</span></div>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="details">
+                <p id="det-date"><strong>ڕێککەوت:</strong> هەینی، ١٨ی کانوونی یەکەم</p>
+                <p id="det-time"><strong>کاتژمێر:</strong> ٧:٠٠ی ئێوارە</p>
+                <p id="det-location"><strong>شوێن:</strong> سلێمانی - سەرچنار</p>
+
+                <a href="https://maps.app.goo.gl/1w7zDsKMTD3Ynwy19?g_st=ic" target="_blank" class="map-link-wrapper">
+                    <img src="holl.jpg" class="map-img" alt="Location Map">
+                </a>
+                <p id="map-hint">بۆ بینینی شوێنی هۆڵەکە لەسەر گووگڵ ماپ- کلیک لە وێنەکەی سەرەوە بکە</p>
+            </div>
+
+            <hr>
+
+            <div class="rsvp-section">
+                <h3 id="rsvp-title">پشتڕاستکردنەوەی ئامادەبوون و پیرۆزبایی</h3>
+                <div class="form-group">
+                    <label id="lbl-name" for="guest-name">ناوی بەڕێزتان:</label>
+                    <input type="text" id="guest-name" placeholder="ناوی خۆت بنووسە...">
+                </div>
+                <div class="form-group">
+                    <label id="lbl-ask" for="attendance">ئایا ئامادە دەبیت?</label>
+                    <select id="attendance">
+                        <option id="opt-yes" value="بەڵێ، بەخۆشحاڵییەوە ئامادە دەبم">بەڵێ، بەخۆشحاڵییەوە ئامادە دەبم 😍</option>
+                        <option id="opt-no" value="داوای لێبوردن دەکەم، ناتوانم ئامادەبم">داوای لێبوردن دەکەم، ناتوانم ئامادەبم 😔</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label id="lbl-msg" for="message">نامەی پیرۆزبایی (ئارەزومەندانە):</label>
+                    <input type="text" id="message" placeholder="نامەیەکی کورت بنووسە...">
+                </div>
+                <button id="send-whatsapp" class="submit-btn">💬 <span id="lbl-btn-text">ناردن لە ڕێگەی واتسئەپ</span></button>
+            </div>
+            
+            <div style="height: 20px;"></div> 
+        </div>
+    </div>
+
+    <script>
+        var music = document.getElementById('bg-music');
+        var musicBtn = document.getElementById('music-btn');
+        var langBtn = document.getElementById('lang-btn');
+        var isPlaying = false;
+        var currentLang = "ku"; 
+
+        var gateScreen = document.getElementById('gate-screen');
+        var openBtn = document.getElementById('open-btn');
+        var mainContent = document.getElementById('main-content');
+
+        openBtn.addEventListener('click', function() {
+            gateScreen.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+            mainContent.style.opacity = 1;
+            music.play().then(() => {
+                isPlaying = true;
+                musicBtn.innerText = "🔊";
+            }).catch(e => console.log("Audio play blocked"));
+        });
+
+        musicBtn.addEventListener('click', function() {
+            if(isPlaying) {
+                music.pause();
+                musicBtn.innerText = "🔇";
+            } else {
+                music.play();
+                musicBtn.innerText = "🔊";
+            }
+            isPlaying = !isPlaying;
+        });
+
+        // --- کۆدی تایمەری چرکە و خولەک و کاتژمێر ---
+        var targetDate = new Date("December 18, 2026 19:00:00").getTime();
+
+        var countdownInterval = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = targetDate - now;
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById("days").innerText = "00";
+                document.getElementById("hours").innerText = "00";
+                document.getElementById("minutes").innerText = "00";
+                document.getElementById("seconds").innerText = "00";
+                return;
+            }
+
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+        }, 1000);
+
+        // --- کۆدی ناردنی نامەی فۆڕمەکە بۆ واتسئەپ ---
+        document.getElementById('send-whatsapp').addEventListener('click', function() {
+            var name = document.getElementById('guest-name').value.trim();
+            var attendance = document.getElementById('attendance').value;
+            var msg = document.getElementById('message').value.trim();
+
+            if(name === "") {
+                alert(currentLang === "ku" ? "تکایە سەرەتا ناوی خۆت بنووسە!" : "يرجى كتابة اسمك أولاً!");
+                return;
+            }
+
+            var phoneNumber = "9647701915449"; // لێرە ژمارەی مۆبایلی خۆت دابنێ بەبێ سفری سەرەتا
+            var whatsappText = "";
+
+            if (currentLang === "ku") {
+                whatsappText = "سڵاو، وەڵامی بانگهێشتنامەی هاوسەرگیری:\n\n" +
+                               "👤 ناو: " + name + "\n" +
+                               " Attendance: " + attendance + "\n";
+                if(msg !== "") {
+                    whatsappText += " پیرۆزبایی: " + msg;
+                }
+            } else {
+                whatsappText = "مرحباً، رد على دعوة الزفاف:\n\n" +
+                               "👤 الاسم: " + name + "\n" +
+                               " الحضور: " + attendance + "\n";
+                if(msg !== "") {
+                    whatsappText += " رسالة التهنئة: " + msg;
+                }
+            }
+
+            var encodedText = encodeURIComponent(whatsappText);
+            var whatsappUrl = "https://wa.me/" + phoneNumber + "?text=" + encodedText;
+            window.open(whatsappUrl, '_blank');
+        });
+
+        // فەرهەنگی وەرگێڕانی تەواوکاری
+        var translations = {
+            ku: {
+                langBtn: "عەرەبی",
+                openBtn: "کلیک بکە بۆ کردنەوە",
+                welcome: "بە ڕێزەوە بانگهێشتتان دەکەین بۆ ئامادەبوون لە ئاهەنگی هاوسەرگیریمان",
+                countdownTitle: "لەم ڕۆژە پڕ لە خۆشییەدا کە دڵەکانمان دەبن بە یەک، چاوەڕوانی ئامادەبوونی ئێوەی ئازیزین بۆ ئەوەی پێکەوە سەرەتای جوانترین چیرۆکی ژیانمان دەستپێبکەین.",
+                lblDays: "ڕۆژ", lblHours: "کاتژمێر", lblMinutes: "خولەک", lblSeconds: "چرکە",
+                date: "<strong>ڕێککەوت:</strong> هەینی، ١٨ی کانوونی یەکەم",
+                time: "<strong>کاتژمێر:</strong> ٧:٠٠ی ئێوارە",
+                location: "<strong>شوێن:</strong> سلێمانی - سەرچنار",
+                mapHint: "بۆ بینینی شوێنی هۆڵەکە لەسەر گووگڵ ماپ- کلیک لە وێنەکەی سەرەوە بکە",
+                rsvpTitle: "پشتڕاستکردنەوەی ئامادەبوون و پیرۆزبایی",
+                lblName: "ناوی بەڕێزتان:",
+                lblAsk: "ئایا ئامادە دەبیت?",
+                optYes: "بەڵێ، بەخۆشحاڵییەوە ئامادە دەبم 😍",
+                optNo: "داوای لێبوردن دەکەم، ناتوانم ئامادەبم 😔",
+                lblMsg: "نامەی پیرۆزبایی (ئارەزومەندانە):",
+                lblBtnText: "ناردن لە ڕێگەی واتسئەپ"
+            },
+            ar: {
+                langBtn: "Kurdî",
+                openBtn: "اضغط هنا للفتح",
+                welcome: "نفتخر بدعوتكم لحضور حفل زفافنا الميمون",
+                countdownTitle: "في هذا اليوم البهيج الذي توحدت فيه قلوبنا، نتطلع إلى حضوركم الكريم لنبدأ معاً أجمل فصول قصة حياتنا.",
+                lblDays: "أيام", lblHours: "ساعات", lblMinutes: "دقائق", lblSeconds: "ثواني",
+                date: "<strong>التاريخ:</strong> الجمعة، ١٨ كانون الأول",
+                time: "<strong>الوقت:</strong> ٧:٠٠ مساءً",
+                location: "<strong>المكان:</strong> السليمانية - سرجنار",
+                mapHint: "لمشاهدة موقع القاعة على خرائط جوجل - اضغط على الصورة أعلاه",
+                rsvpTitle: "تأكيد الحضور والتهاني",
+                lblName: "إسمكم الكريم:",
+                lblAsk: "هل ستشرفنا بحضورك؟",
+                optYes: "نعم، بكل سرور سأحضر 😍",
+                optNo: "أعتذر، لا أستطيع الحضور 😔",
+                lblMsg: "رسالة تهنئة (اختياري):",
+                lblBtnText: "إرسال عبر الواتساب"
+            }
+        };
+
+        langBtn.addEventListener('click', function() {
+            if (currentLang === "ku") {
+                currentLang = "ar";
+                document.documentElement.setAttribute('lang', 'ar');
+            } else {
+                currentLang = "ku";
+                document.documentElement.setAttribute('lang', 'ku');
+            }
+            
+            langBtn.innerText = translations[currentLang].langBtn;
+            openBtn.innerText = translations[currentLang].openBtn;
+            document.getElementById('welcome-text').innerText = translations[currentLang].welcome;
+            document.getElementById('countdown-title').innerText = translations[currentLang].countdownTitle;
+            
+            document.getElementById('lbl-days').innerText = translations[currentLang].lblDays;
+            document.getElementById('lbl-hours').innerText = translations[currentLang].lblHours;
+            document.getElementById('lbl-minutes').innerText = translations[currentLang].lblMinutes;
+            document.getElementById('lbl-seconds').innerText = translations[currentLang].lblSeconds;
+
+            document.getElementById('det-date').innerHTML = translations[currentLang].date;
+            document.getElementById('det-time').innerHTML = translations[currentLang].time;
+            document.getElementById('det-location').innerHTML = translations[currentLang].location;
+            document.getElementById('map-hint').innerText = translations[currentLang].mapHint;
+            document.getElementById('rsvp-title').innerText = translations[currentLang].rsvpTitle;
+            document.getElementById('lbl-name').innerText = translations[currentLang].lblName;
+            document.getElementById('lbl-ask').innerText = translations[currentLang].lblAsk;
+            
+            document.getElementById('opt-yes').innerText = translations[currentLang].optYes;
+            document.getElementById('opt-no').innerText = translations[currentLang].optNo;
+            
+            document.getElementById('lbl-msg').innerText = translations[currentLang].lblMsg;
+            document.getElementById('lbl-btn-text').innerText = translations[currentLang].lblBtnText;
+        });
+    </script>
+</body>
+</html>
